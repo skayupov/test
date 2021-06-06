@@ -47,11 +47,35 @@ function SignIn() {
   const signIn = () => {
     firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-          console.log(userCredential.user)
+      .fetchSignInMethodsForEmail(email)
+      .then((result) => {
+        console.log(result)
+        if (result.length > 0) {
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then((result) => {
+                
+            })
+            .catch((error) => {
+              alert(error.message)
+              console.log(error.code, error.message)
+            });
+        } else {
+          firebase
+            .auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then((result) => {
+                alert("Пользователь успешно создан")
+            })
+            .catch((error) => {
+              alert(error.message)
+              console.log(error.code, error.message)
+            });
+        }
       })
       .catch((error) => {
+          alert(error.message)
           console.log(error.code, error.message)
       });
   }
@@ -137,8 +161,8 @@ function ChatMessage(props) {
   const { text, uid, photoURL, email, createdAt } = props.message;
 
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
-
-  const newDate = new Date(createdAt.toDate());
+  console.log(createdAt)
+  const newDate = createdAt !== null ? new Date(createdAt.toDate()) : new Date();
   const date = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate();
   const month = newDate.getMonth() < 10 ? '0' + (newDate.getMonth() + 1) : newDate.getMonth() + 1; 
   const hour = newDate.getHours();
