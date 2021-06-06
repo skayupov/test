@@ -134,14 +134,21 @@ function ChatRoom() {
 
 
 function ChatMessage(props) {
-  const { text, uid, photoURL, email } = props.message;
+  const { text, uid, photoURL, email, createdAt } = props.message;
 
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
+
+  const newDate = new Date(createdAt.toDate());
+  const date = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate();
+  const month = newDate.getMonth() < 10 ? '0' + (newDate.getMonth() + 1) : newDate.getMonth() + 1; 
+  const hour = newDate.getHours();
+  const minute = newDate.getMinutes();
+  const sec = newDate.getSeconds();
 
   return (
     <>
       <div className={`message ${messageClass}`}>
-        <label>{email}</label>
+        <label>{`${date}.${month} ${hour}:${minute}:${sec} - ${email}`}</label>
       </div>
       <div className={`message ${messageClass}`}>
         <img src={photoURL || 'https://cdn.pixabay.com/photo/2021/06/01/07/03/sparrow-6300790_960_720.jpg'} />
